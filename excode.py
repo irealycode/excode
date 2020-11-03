@@ -10,11 +10,13 @@ import os
 HEADER_LENGTH = 10
 b = 0
 using = "nothing"
-HOST = ""
+HOST = "127.0.0.1"
 LPORT = ""
-PORT = 0
+PORT = 1234
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+if using == "socketS":
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sockets_list = [server_socket]
 clients = {}
 def baner():
@@ -68,6 +70,8 @@ def baner():
         print("excode made by : irealycode")
         print("https://github.com/irealycode")
         print("                               ")
+
+#---------------------------server side------------------------------#
 
 def receive_message(client_socket):
     try:
@@ -123,12 +127,63 @@ def serverconnet():
     print('listening on ' + HOST + ':' + LPORT + '...')
     serverlisten()
 
+#------------------------end of server side--------------------------#
 
+#---------------------------client side------------------------------#
+
+def clientconnet():
+    server_sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_sockets.connect((HOST, PORT))
+    server_sockets.setblocking(False)
+    my_username = input("username: ")
+    username = my_username.encode('utf-8')
+    username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
+    server_sockets.send(username_header + username)
+    print(Fore.LIGHTGREEN_EX + 'loged in as ' + my_username + ' seccessfully.')
+    while True:
+        message = input(Fore.WHITE +'[-'+ Fore.CYAN + f'{my_username}' + Fore.WHITE + '-] : ')
+        if message == 'exit -y':
+            print("goodbye.")
+            
+            break
+        if len(message) <= 200:
+            if message:
+                message = message.encode('utf-8')
+                message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+                server_sockets.send(message_header + message)
+        elif len(message) > 200:
+            print("you can't send messages that are longer than 200 characters")
+            print("your message is " + str(len(message)) + " characters long")
+
+        try:
+            while True:
+                username_header = server_sockets.recv(HEADER_LENGTH)
+                if not len(username_header):
+                    print('Connection closed by the server')
+                    sys.exit()
+                username_length = int(username_header.decode('utf-8').strip())
+                username = server_sockets.recv(username_length).decode('utf-8')
+                message_header = server_sockets.recv(HEADER_LENGTH)
+                message_length = int(message_header.decode('utf-8').strip())
+                message = server_sockets.recv(message_length).decode('utf-8')
+                print(Fore.WHITE + '[-' + Fore.GREEN + f'{username}' + Fore.WHITE + '-] : ' + Fore.YELLOW + f'{message}')
+
+        except IOError as e:
+            if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
+                print('Reading error: {}'.format(str(e)))
+                sys.exit()
+            continue
+
+        except Exception as e:
+            print('error')
+            sys.exit()
+#------------------------end of client side----------------------------#
 
 baner()
 excodeInput = "eXcode> "
 while True:
     excode = input(Fore.GREEN + excodeInput + Fore.RESET)
+    #can't do nothing for now
     if excode.startswith('search '):
         try:
             searchfor = excode.split("search ",1)[1]
@@ -136,19 +191,32 @@ while True:
         except:
             print('unknown command: ' + excode)
     elif excode == "exit":
+        print("goodbye.")
         sys.exit()
     elif excode == "help":
-        print("you can do nothing in the current time :/")
+        print("use : for using libraries")
+        print("search : searching for libraries")
+        print("clear or cls : clear the terminal window")
+        print("set : for setting variables for libraries")
+        print("show options : showing options for libraries")
+        print("run : running or executing the command")
+        print("banner : show one of our banners")
+        print("help : this menu that you are reading")
+        print("exit : exit excode")
     elif excode == "banner":
         baner()
     elif excode == "clear" or excode == "cls":
         os.system('cls' if os.name == 'nt' else 'clear')
+#------------------use is here------------------#
     elif excode.startswith('use '):
         try:
             use = excode.split("use ",1)[1]
             if use == "socket/server":
                 excodeInput = "eXcode(" + Fore.RED + "socket/server" + Fore.LIGHTGREEN_EX + ")> "
-                using = "socket"
+                using = "socketS"
+            elif use == "socket/client":
+                excodeInput = "eXcode(" + Fore.RED + "socket/client" + Fore.LIGHTGREEN_EX + ")> "
+                using = "socketC"
             elif use == "nothing":
                 using = "nothing"
                 excodeInput = "eXcode> "
@@ -156,8 +224,9 @@ while True:
                 print("can't find" + Fore.RED + use + Fore.RESET + " in excode library")
         except:
             print("error on using")
+#------------------use is here------------------#
     elif excode.startswith('set '):
-        if using == "socket":
+        if using == "socketS" or using == "socketC":
             try:
                 setL = excode.split("set ",1)[1]
                 if setL.startswith('HOST '):
@@ -173,13 +242,30 @@ while True:
                         print("error in PORT")                
             except:
                 print("error in seting")
-        
+    elif excode == "show":
+        print("do you mean: 'show options' ?")
+    elif excode.startswith('show '):
+        if using == "socketS" or using == "socketC":
+            try:
+                show = excode.split("show ",1)[1]
+                if show == "options":
+                    print("HOST: " + HOST)
+                    print("PORT: " + str(PORT))
+                else:
+                    print("show what?")
+            except:
+                print("error showing options")
     elif excode == "run":
-        if using == "socket":
+        if using == "socketS":
             if HOST != "" and PORT != 0:
                 serverconnet()
             else:
                 print("you need to set values to both port and host")
+        elif using == "socketC":
+            if HOST != "" and PORT != 0:
+                clientconnet()
+            else:
+                print("you need to set values to both port and host1")
         else:
             print('run what??')
     elif excode.startswith(' '):
