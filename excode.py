@@ -13,7 +13,7 @@ using = "nothing"
 HOST = "127.0.0.1"
 LPORT = ""
 PORT = 1234
-
+library_list = ["socket/server", "socket/client", "lib/test"]
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if using == "socketS":
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -187,9 +187,19 @@ while True:
     if excode.startswith('search '):
         try:
             searchfor = excode.split("search ",1)[1]
-            print(searchfor)
+            matching = [s for s in library_list if searchfor in s]
+            matchingCount = len(matching)
+            if matching:
+                for i in range(matchingCount):
+                    print(matching[i])
+            else:
+                print(searchfor + ' not found.')
         except:
-            print('unknown command: ' + excode)
+            print('error searching')
+    elif excode == "libs":
+        libsCount = len(library_list)
+        for i in range(libsCount):
+            print(library_list[i])
     elif excode == "exit":
         print("goodbye.")
         sys.exit()
@@ -200,6 +210,7 @@ while True:
         print("set : for setting variables for libraries")
         print("show options : showing options for libraries")
         print("run : running or executing the command")
+        print("libs : show available libraries")
         print("banner : show one of our banners")
         print("help : this menu that you are reading")
         print("exit : exit excode")
@@ -211,19 +222,26 @@ while True:
     elif excode.startswith('use '):
         try:
             use = excode.split("use ",1)[1]
-            if use == "socket/server":
-                excodeInput = "eXcode(" + Fore.RED + "socket/server" + Fore.LIGHTGREEN_EX + ")> "
+            print(str(library_list[0]))
+            if use == str(library_list[0]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[0]) + Fore.LIGHTGREEN_EX + ")> "
                 using = "socketS"
-            elif use == "socket/client":
-                excodeInput = "eXcode(" + Fore.RED + "socket/client" + Fore.LIGHTGREEN_EX + ")> "
+            elif use == str(library_list[1]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[1]) + Fore.LIGHTGREEN_EX + ")> "
                 using = "socketC"
+            elif use == str(library_list[2]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[2]) + Fore.LIGHTGREEN_EX + ")> "
+                using = "test"
             elif use == "nothing":
                 using = "nothing"
                 excodeInput = "eXcode> "
             else:
-                print("can't find" + Fore.RED + use + Fore.RESET + " in excode library")
+                print("can't find " + Fore.RED + use + Fore.RESET + " in excode library")
         except:
             print("error on using")
+    elif excode == "back":
+        using = "nothing"
+        excodeInput = "eXcode> "
 #------------------use is here------------------#
     elif excode.startswith('set '):
         if using == "socketS" or using == "socketC":
