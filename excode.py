@@ -124,7 +124,7 @@ def serverlisten():
 def serverconnet():
     server_socket.bind((HOST, PORT))
     server_socket.listen()
-    print('listening on ' + HOST + ':' + LPORT + '...')
+    print('listening on ' + HOST + ':' + str(PORT) + '...')
     serverlisten()
 
 #------------------------end of server side--------------------------#
