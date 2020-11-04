@@ -5,6 +5,7 @@ import sys, getopt
 from colorama import Fore, Back, Style
 import random
 import os
+from cryptography.fernet import Fernet
 
 
 HEADER_LENGTH = 10
@@ -13,12 +14,16 @@ using = "nothing"
 HOST = "127.0.0.1"
 LPORT = ""
 PORT = 1234
-library_list = ["socket/server", "socket/client", "lib/test"]
+library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt"]
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if using == "socketS":
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sockets_list = [server_socket]
 clients = {}
+originalfile = ''
+enc_file = ''
+dec_file = ''
+keyfilename = ''
 def baner():
     b = random.randrange(1, 5)
     if b == 1:
@@ -179,11 +184,50 @@ def clientconnet():
             sys.exit()
 #------------------------end of client side----------------------------#
 
+#------------------------encrypting files---------------------------#
+
+def encryptfile():
+    key = Fernet.generate_key()
+
+    with open(keyfilename, 'wb') as mykey:
+        mykey.write(key)
+    with open(keyfilename, 'rb') as mykey:
+        key = mykey.read()
+    f = Fernet(key)
+    with open(originalfile, 'rb') as original_file:
+        original = original_file.read()
+
+    encrypted = f.encrypt(original)
+
+    with open (enc_file, 'wb') as encrypted_file:
+        encrypted_file.write(encrypted)
+
+    print(Fore.GREEN + "file encrypted")
+
+#------------------------encryptng files end------------------------#
+
+#------------------------decryptng files end------------------------#
+
+def decryptfile():
+    with open(keyfilename, 'rb') as mykey:
+        key = mykey.read()
+    f = Fernet(key)
+
+    with open(enc_file, 'rb') as encrypted_file:
+        encrypted = encrypted_file.read()
+
+    decrypted = f.decrypt(encrypted)
+
+    with open(dec_file, 'wb') as decrypted_file:
+        decrypted_file.write(decrypted)
+        
+    print(Fore.GREEN + "file encrypted")
+
+#------------------------decryptng files end------------------------#
 baner()
 excodeInput = "eXcode> "
 while True:
     excode = input(Fore.GREEN + excodeInput + Fore.RESET)
-    #can't do nothing for now
     if excode.startswith('search '):
         try:
             searchfor = excode.split("search ",1)[1]
@@ -203,6 +247,8 @@ while True:
     elif excode == "exit":
         print("goodbye.")
         sys.exit()
+    elif excode == 'encrypt':
+        encryptfile()
     elif excode == "help":
         print("use : for using libraries")
         print("search : searching for libraries")
@@ -230,7 +276,10 @@ while True:
                 using = "socketC"
             elif use == str(library_list[2]):
                 excodeInput = "eXcode(" + Fore.RED + str(library_list[2]) + Fore.LIGHTGREEN_EX + ")> "
-                using = "test"
+                using = "encryptF"
+            elif use == str(library_list[3]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[3]) + Fore.LIGHTGREEN_EX + ")> "
+                using = "decryptF"
             elif use == "nothing":
                 using = "nothing"
                 excodeInput = "eXcode> "
@@ -242,6 +291,7 @@ while True:
         using = "nothing"
         excodeInput = "eXcode> "
 #------------------use is here------------------#
+#------------------set is here------------------#
     elif excode.startswith('set '):
         if using == "socketS" or using == "socketC":
             try:
@@ -259,6 +309,53 @@ while True:
                         print("error in PORT")                
             except:
                 print("error in seting")
+        elif using == "encryptF":
+            try:
+                setL = excode.split("set ",1)[1]
+                if setL.startswith('Ofile '):
+                    try:
+                        Ofile = setL.split("Ofile ",1)[1]
+                        originalfile = Ofile
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Efile '):
+                    try:
+                        Efile = setL.split("Efile ",1)[1]
+                        enc_file = Efile
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Kfile '):
+                    try:
+                        Kfile = setL.split("Kfile ",1)[1]
+                        keyfilename = Kfile
+                    except:
+                        print("can't find file")
+            except:
+                print("error setting")
+        elif using == "decryptF":
+            try:
+                setL = excode.split("set ",1)[1]
+                if setL.startswith('Dfile '):
+                    try:
+                        Dfile = setL.split("Dfile ",1)[1]
+                        dec_file = Dfile
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Efile '):
+                    try:
+                        Efile = setL.split("Efile ",1)[1]
+                        enc_file = Efile
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Kfile '):
+                    try:
+                        Kfile = setL.split("Kfile ",1)[1]
+                        keyfilename = Kfile
+                    except:
+                        print("can't find file")
+            except:
+                print("error setting")    
+#------------------set is here------------------#
     elif excode == "show":
         print("do you mean: 'show options' ?")
     elif excode.startswith('show '):
@@ -272,6 +369,30 @@ while True:
                     print("show what?")
             except:
                 print("error showing options")
+        elif using == "encryptF":
+            try:
+                show = excode.split("show ",1)[1]
+                if show == "options":
+                    print("Ofile(original file): " + originalfile)
+                    print("Efile(encrypted file): " + enc_file)
+                    print("Kfile(key file(needs to be a .key file)): " + keyfilename)
+                else:
+                    print("show what?")
+            except:
+                print("error showing options")
+        elif using == "decryptF":
+            try:
+                show = excode.split("show ",1)[1]
+                if show == "options":
+                    print("Dfile(original file): " + dec_file)
+                    print("Efile(encrypted file): " + enc_file)
+                    print("Kfile(key file(needs to be a .key file)): " + keyfilename)
+                else:
+                    print("show what?")
+            except:
+                print("error showing options")
+        else:
+            print("you need to set a library.")
     elif excode == "run":
         if using == "socketS":
             if HOST != "" and PORT != 0:
@@ -282,7 +403,17 @@ while True:
             if HOST != "" and PORT != 0:
                 clientconnet()
             else:
-                print("you need to set values to both port and host1")
+                print("you need to set values to both port and host")
+        elif using == "encryptF":
+            if keyfilename != '' and enc_file != '' and originalfile != '':
+                encryptfile()
+            else:
+                print("you need to set values to the files")
+        elif using == "decryptF":
+            if keyfilename != '' and enc_file != '' and dec_file != '':
+                decryptfile()
+            else:
+                print("you need to set values to the files")
         else:
             print('run what??')
     elif excode.startswith(' '):
