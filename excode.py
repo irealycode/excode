@@ -222,7 +222,6 @@ while True:
     elif excode.startswith('use '):
         try:
             use = excode.split("use ",1)[1]
-            print(str(library_list[0]))
             if use == str(library_list[0]):
                 excodeInput = "eXcode(" + Fore.RED + str(library_list[0]) + Fore.LIGHTGREEN_EX + ")> "
                 using = "socketS"
