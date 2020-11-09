@@ -261,7 +261,7 @@ def decryptfile():
         with open(dec_file, 'wb') as decrypted_file:
             decrypted_file.write(decrypted)
             
-        print(Fore.GREEN + "file encrypted")
+        print(Fore.GREEN + "file decrypted")
     except:
         print("error decrypting")
 
