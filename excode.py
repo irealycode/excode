@@ -534,9 +534,9 @@ while True:
                         url = setL.split("URL ",1)[1]
                     except:
                         print("can't find file")
-                elif setL.startswith('Logedurl '):
+                elif setL.startswith('Errorurl '):
                     try:
-                        sucurl = setL.split("Logedurl ",1)[1]
+                        sucurl = setL.split("Errorurl ",1)[1]
                     except:
                         print("can't find file")
                 elif setL.startswith('Wordlist '):
@@ -624,7 +624,7 @@ while True:
             print("Username: " + ftpusername)
         elif using == "webP":
             print("URL: " + url)
-            print("Logedurl: " + sucurl)
+            print("Errorurl: " + sucurl)
             print("Wordlist: " + wordlist)
             print("Username: " + webuser)
             print("Fnum: " + str(formnumber))
