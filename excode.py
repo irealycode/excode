@@ -439,7 +439,7 @@ while True:
                     except:
                         print("error in PORT")    
                 else:
-                    print("error setting")            
+                    print("error setting:" + setL)            
             except:
                 print("error in seting")
         elif using == "encryptF":
@@ -464,7 +464,7 @@ while True:
                     except:
                         print("can't find file")
                 else:
-                    print("error setting")
+                    print("error setting:" + setL)
             except:
                 print("error setting")
         elif using == "decryptF":
@@ -489,9 +489,9 @@ while True:
                     except:
                         print("can't find file")
                 else:
-                    print("error setting")
+                    print("error setting:" + setL)
             except:
-                print("error setting")  
+                print("error setting")
         elif using == "sshP" or using == "ftpP":
             try:
                 sshW = excode.split("set ",1)[1]
@@ -523,7 +523,7 @@ while True:
                     except:
                         print("error wordlist setting")
                 else:
-                    print("error setting")
+                    print("error setting:" + sshW)
             except:
                         print("error setting")
         elif using == "webP":
@@ -570,7 +570,7 @@ while True:
                     except:
                         print("error form number in list")
                 else:
-                    print("error setting")
+                    print("error setting:" + setL)
             except:
                 print("error setting")  
         else:
