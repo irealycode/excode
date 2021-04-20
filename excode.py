@@ -22,7 +22,7 @@ using = "nothing"
 HOST = "127.0.0.1"
 LPORT = ""
 PORT = 1234
-library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "ssh/pass", "ftp/pass", "web/pass"]
+library_list = ["socket/server", "socket/client", "files/encrypt", "files/decrypt" , "pass/ssh", "pass/ftp", "pass/web"]
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if using == "socketS":
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -50,51 +50,64 @@ formusername = ""
 def baner():
     b = random.randrange(1, 5)
     if b == 1:
-        print(Fore.YELLOW + '▓█████ ▒██   ██▒ ▄████▄   ▒█████  ▓█████▄ ▓█████ ')
-        print('▓█   ▀ ▒▒ █ █ ▒░▒██▀ ▀█  ▒██▒  ██▒▒██▀ ██▌▓█   ▀ ')
-        print('▒███   ░░  █   ░▒▓█    ▄ ▒██░  ██▒░██   █▌▒███   ')
-        print('▒▓█  ▄  ░ █ █ ▒ ▒▓▓▄ ▄██▒▒██   ██░░▓█▄   ▌▒▓█  ▄ ')
-        print('░▒████▒▒██▒ ▒██▒▒ ▓███▀ ░░ ████▓▒░░▒████▓ ░▒████▒')
-        print('░░ ▒░ ░▒▒ ░ ░▓ ░░ ░▒ ▒  ░░ ▒░▒░▒░  ▒▒▓  ▒ ░░ ▒░ ░')
-        print(' ░ ░  ░░░   ░▒ ░  ░  ▒     ░ ▒ ▒░  ░ ▒  ▒  ░ ░  ░')
-        print('   ░    ░    ░  ░        ░ ░ ░ ▒   ░ ░  ░    ░   ')
-        print('   ░  ░ ░    ░  ░ ░          ░ ░     ░       ░  ░')
-        print('                ░                  ░             ' + Fore.RESET)
-        print("                                                 ")
+        
+        banner1 = """ 
+.------..------..------..------..------..------.
+|E.--. ||X.--. ||C.--. ||O.--. ||D.--. ||E.--. |
+| (\/) || :/\: || :/\: || :/\: || :/\: || (\/) |
+| :\/: || (__) || :\/: || :\/: || (__) || :\/: |
+| '--'E|| '--'X|| '--'C|| '--'O|| '--'D|| '--'E|
+`------'`------'`------'`------'`------'`------'
+
+        """
+        print(Fore.YELLOW + banner1 + Fore.RESET)
         print("excode made by :" + Fore.YELLOW + " irealycode" + Fore.RESET)
         print("https://github.com/irealycode")
         print("                               ")
     elif b == 2:
-        print(Fore.WHITE + '.------..------..------..------..------..------.')
-        print('|E.--. ||X.--. ||C.--. ||O.--. ||D.--. ||E.--. |')
-        print('| (\/) || :/\: || :/\: || :/\: || :/\: || (\/) |')
-        print('| :\/: || (__) || :\/: || :\/: || (__) || :\/: |')
-        print("| '--'E|| '--'X|| '--'C|| '--'O|| '--'D|| '--'E|")
-        print("`------'`------'`------'`------'`------'`------'" + Fore.RESET)
-        print("                                                ")
+        banner2 = """                                   
+                     (          
+   (     )           )\ )   (   
+  ))\ ( /(  (   (   (()/(  ))\  
+ /((_))\()) )\  )\   ((_))/((_) 
+(_)) ((_)\ ((_)((_)  _| |(_))   
+/ -_)\ \ // _|/ _ \/ _` |/ -_)  
+\___|/_\_\\__|\___/\__,_|\___|  
+
+         """
+        print(Fore.RED + banner2 + Fore.RESET)
         print("excode made by :" + Fore.YELLOW + " irealycode" + Fore.RESET)
         print("https://github.com/irealycode")
         print("                               ")
     elif b == 3:
-        print(Fore.GREEN + "                               .___")
-        print("  ____ ___  ___ ____  ____   __| _/____")
-        print("_/ __ \\  \/  // ___\/  _ \ / __ |/ __ \ ")
-        print("\  ___/ >    <\  \__(  <_> ) /_/ \  ___/")
-        print(" \___  >__/\_ \\___  >____/\____ |\___  >")
-        print("     \/      \/    \/           \/    \/ " + Fore.RESET)
-        print("                                         ")
+        banner3 = """ 
+                                .___      
+  ____ ___  ___ ____  ____   __| _/____  
+_/ __ \\  \/  // ___\/  _ \ / __ |/ __ \ 
+\  ___/ >    <\  \__(  <_> ) /_/ \  ___/ 
+ \___  >__/\_ \\___  >____/\____ |\___  >
+     \/      \/    \/           \/    \/ 
+
+        """
+        print(Fore.GREEN + banner3 + Fore.RESET)
         print("excode made by :" + Fore.YELLOW + " irealycode" + Fore.RESET)
         print("https://github.com/irealycode")
         print("                               ")
     elif b == 4:
-        print(Fore.LIGHTRED_EX + "                     (")
-        print("   (     )           )\ )   (")
-        print("  ))\ ( /(  (   (   (()/(  ))\ ")
-        print(" /((_))\()) )\  )\   ((_))/((_)")
-        print("(_)) ((_)\ ((_)((_)  _| |(_))")
-        print("/ -_)\ \ // _|/ _ \/ _` |/ -_)")
-        print("\___| /_\_\\__|\___/\__,_|\___|" + Fore.RESET)
-        print("                               ")
+        banner4 = """
+▓█████ ▒██   ██▒ ▄████▄   ▒█████  ▓█████▄ ▓█████ 
+▓█   ▀ ▒▒ █ █ ▒░▒██▀ ▀█  ▒██▒  ██▒▒██▀ ██▌▓█   ▀ 
+▒███   ░░  █   ░▒▓█    ▄ ▒██░  ██▒░██   █▌▒███   
+▒▓█  ▄  ░ █ █ ▒ ▒▓▓▄ ▄██▒▒██   ██░░▓█▄   ▌▒▓█  ▄ 
+░▒████▒▒██▒ ▒██▒▒ ▓███▀ ░░ ████▓▒░░▒████▓ ░▒████▒
+░░ ▒░ ░▒▒ ░ ░▓ ░░ ░▒ ▒  ░░ ▒░▒░▒░  ▒▒▓  ▒ ░░ ▒░ ░
+ ░ ░  ░░░   ░▒ ░  ░  ▒     ░ ▒ ▒░  ░ ▒  ▒  ░ ░  ░
+   ░    ░    ░  ░        ░ ░ ░ ▒   ░ ░  ░    ░   
+   ░  ░ ░    ░  ░ ░          ░ ░     ░       ░  ░
+                ░                  ░             
+
+         """
+        print(Fore.YELLOW + banner4 + Fore.RESET)
         print("excode made by :" + Fore.YELLOW + " irealycode" + Fore.RESET)
         print("https://github.com/irealycode")
         print("                               ")
@@ -279,7 +292,7 @@ def decryptfile():
 
 def sshP():
     client.load_system_host_keys()
-    client.load_host_keys('C:/Users/User/.ssh/known_hosts')
+    # client.load_host_keys('/Users/User/.ssh/known_hosts')
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     f = open(wordlist)
     lines = f.readlines()
@@ -309,13 +322,13 @@ def ftpPass():
         for i in range(len(lines)):
             passwordFTP = lines[i].strip()
             try:
-                ftp.login(user = passwordFTP, passwd = ftpusername)
+                ftp.login(user = ftpusername, passwd = passwordFTP)
                 print("password found: " + Fore.GREEN + passwordFTP + Fore.RESET)
                 break
             except:
                 print("password failed: " + Fore.LIGHTRED_EX + passwordFTP + Fore.RESET)
     except:
-        print("failed")
+        print("couldn't find the password")
 
 #------------------------bruteforce ftp-----------------------#
 #------------------------bruteforce web-----------------------#
@@ -346,6 +359,7 @@ def webPass():
 
 #------------------------bruteforce web-----------------------#
 
+os.system('cls' if os.name == 'nt' else 'clear')
 baner()
 excodeInput = "eXcode> "
 while True:
@@ -372,16 +386,27 @@ while True:
     elif excode == 'encrypt':
         encryptfile()
     elif excode == "help":
-        print("use : for using libraries")
-        print("search : searching for libraries")
-        print("clear or cls : clear the terminal window")
-        print("set : for setting variables for libraries")
-        print("show options : showing options for libraries")
-        print("run : running or executing the command")
-        print("libs : show available libraries")
-        print("banner : show one of our banners")
-        print("help : this menu that you are reading")
-        print("exit : exit excode")
+        print(Fore.CYAN +""" 
+        use : for using libraries
+
+        search : searching for libraries
+
+        clear or cls : clear the terminal window
+
+        set : for setting variables for libraries
+
+        show options : showing options for libraries
+
+        run : running or executing the command
+
+        libs : show available libraries
+
+        banner : show one of our banners
+
+        help : help...
+
+        exit : exit excode
+        """ + Fore.RESET)
     elif excode == "banner":
         baner()
     elif excode == "clear" or excode == "cls":
@@ -391,25 +416,25 @@ while True:
         try:
             use = excode.split("use ",1)[1]
             if use == str(library_list[0]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[0]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[0]) + Fore.GREEN + ")> "
                 using = "socketS"
             elif use == str(library_list[1]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[1]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[1]) + Fore.GREEN + ")> "
                 using = "socketC"
             elif use == str(library_list[2]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[2]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[2]) + Fore.GREEN + ")> "
                 using = "encryptF"
             elif use == str(library_list[3]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[3]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[3]) + Fore.GREEN + ")> "
                 using = "decryptF"
             elif use == str(library_list[4]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[4]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[4]) + Fore.GREEN + ")> "
                 using = "sshP"
             elif use == str(library_list[5]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[5]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[5]) + Fore.GREEN + ")> "
                 using = "ftpP"
             elif use == str(library_list[6]):
-                excodeInput = "eXcode(" + Fore.RED + str(library_list[6]) + Fore.LIGHTGREEN_EX + ")> "
+                excodeInput = "eXcode(" + Fore.RED + str(library_list[6]) + Fore.GREEN + ")> "
                 using = "webP"
             elif use == "nothing":
                 using = "nothing"
