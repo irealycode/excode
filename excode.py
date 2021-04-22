@@ -41,7 +41,7 @@ SSHPORT = 22
 FTPPORT = 21
 client = SSHClient()
 sshusername = ''
-ftpusername = 's'
+ftpusername = ''
 url = ""
 sucurl = ""
 webuser = ""
@@ -172,6 +172,7 @@ def serverlisten():
                 del clients[notified_socket]
     except:
         print("error connecting")
+        server_socket.close()
 
 
 
@@ -182,7 +183,7 @@ def serverconnet():
         print('listening on ' + HOST + ':' + str(PORT) + '...')
         serverlisten()
     except:
-        print("error conecting")
+        print("error conecting1")
 
 #------------------------end of server side--------------------------#
 
@@ -764,3 +765,4 @@ while True:
             print('unknown command: ' + excode)
     except KeyboardInterrupt:
         print("")
+
