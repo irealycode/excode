@@ -1,5 +1,6 @@
 # excode
 
 What am i curently working on:
-  i'am  curently working on DoS/DDoS attack scripts and making the API more user friendly.
+  i'm curently working on making it user friendly and adding directory fuzzing with some big features.
+  but yeah things takes time.
   Thank you.
